@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>글쓰기 | 자유게시판 | 소르테크</title>
+
+  <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/assets/css/main.css" rel="stylesheet">
+
+  <style>
+    body {
+        background: #f6f6f7;
+    }
+
+    .write-container {
+        max-width: 900px;
+        margin: 100px auto;
+        padding: 0 20px;
+    }
+
+    .write-box {
+        background: #ffffff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .write-header {
+        margin-bottom: 30px;
+    }
+
+    .write-header h1 {
+        font-size: 36px;
+        font-weight: 700;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+    }
+
+    textarea.form-control {
+        min-height: 300px;
+        resize: vertical;
+    }
+
+    .button-area {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="write-container">
+
+  <div class="write-header">
+    <h1>글쓰기</h1>
+    <p>자유게시판에 새로운 글을 작성해주세요.</p>
+  </div>
+
+  <div class="write-box">
+
+    <form id="writeForm">
+
+      <div class="form-group">
+
+        <label for="title">
+          제목
+        </label>
+
+        <input
+                type="text"
+                id="title"
+                class="form-control"
+                placeholder="제목을 입력하세요"
+                required>
+
+      </div>
+
+      <div class="form-group">
+
+        <label for="content">
+          내용
+        </label>
+
+        <textarea
+                id="content"
+                class="form-control"
+                placeholder="내용을 입력하세요"
+                required></textarea>
+
+      </div>
+
+      <div class="button-area">
+
+        <a href="/free-board" class="btn btn-secondary">
+          취소
+        </a>
+
+        <button type="submit" class="btn btn-primary">
+          등록
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+<script>
+
+  document.getElementById("writeForm").addEventListener("submit", async function (event) {
+
+      event.preventDefault();
+
+      const title = document.getElementById("title").value;
+      const content = document.getElementById("content").value;
+
+      const params = new URLSearchParams();
+
+      params.append("title", title);
+      params.append("content", content);
+
+      try {
+
+          const response = await fetch("/api/free-board", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/x-www-form-urlencoded"
+              },
+              body: params
+          });
+
+          if (response.ok) {
+
+              alert("게시글이 등록되었습니다.");
+              window.location.href = "/free-board";
+
+          } else {
+
+              alert("게시글 등록에 실패했습니다.");
+
+          }
+
+      } catch (error) {
+
+          console.error(error);
+          alert("서버와 통신할 수 없습니다.");
+
+      }
+
+  });
+
+</script>
+
+</body>
+
+</html>

@@ -65,4 +65,10 @@ public class UserController {
 
         return authentication.getName();
     }
+
+    @GetMapping("/admin")
+    public String admin() {
+
+        return "관리자 페이지입니다.";
+    }
 }

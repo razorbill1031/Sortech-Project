@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>게시글 상세 | 자유게시판 | 소르테크</title>
+
+  <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/assets/css/main.css" rel="stylesheet">
+
+  <style>
+    body {
+        background: #f6f6f7;
+    }
+
+    .detail-container {
+        max-width: 900px;
+        margin: 100px auto;
+        padding: 0 20px;
+    }
+
+    .detail-box {
+        background: #ffffff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .detail-header {
+        border-bottom: 1px solid #dddddd;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+
+    .detail-header h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .author {
+        color: #777777;
+        font-size: 14px;
+    }
+
+    .content {
+        min-height: 300px;
+        white-space: pre-wrap;
+        line-height: 1.8;
+        margin-bottom: 30px;
+    }
+
+    .button-area {
+        display: flex;
+        justify-content: flex-start;
+        border-top: 1px solid #dddddd;
+        padding-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="detail-container">
+
+  <div class="detail-box">
+
+    <div class="detail-header">
+      <h1 id="title">게시글을 불러오는 중...</h1>
+
+      <div class="author">
+        작성자: <span id="author"></span>
+      </div>
+    </div>
+
+    <div id="content" class="content"></div>
+
+    <div class="button-area">
+
+      <a href="/free-board" class="btn btn-secondary">
+        목록으로
+      </a>
+
+      <div style="margin-left: 15px;">
+
+        <a id="editButton"
+           href="#"
+           class="btn btn-primary">
+          수정
+        </a>
+
+        <button id="deleteButton"
+                type="button"
+                class="btn btn-danger"
+                style="margin-left: 10px;">
+          삭제
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+  const path = window.location.pathname;
+  const id = path.substring(path.lastIndexOf("/") + 1);
+
+  async function loadBoard() {
+
+      try {
+
+          const response = await fetch("/api/free-board/" + id);
+
+          if (!response.ok) {
+              throw new Error("게시글을 불러올 수 없습니다.");
+          }
+
+          const board = await response.json();
+
+          document.getElementById("title").textContent = board.title;
+          document.getElementById("author").textContent = board.author;
+          document.getElementById("content").textContent = board.content;
+
+          document.getElementById("editButton").href =
+              "/free-board/" + id + "/edit";
+
+      } catch (error) {
+
+          console.error(error);
+
+          document.getElementById("title").textContent =
+              "게시글을 불러올 수 없습니다.";
+
+      }
+  }
+
+  document.getElementById("deleteButton").addEventListener(
+      "click",
+      async function () {
+
+          const confirmed = confirm(
+              "정말 이 게시글을 삭제하시겠습니까?"
+          );
+
+          if (!confirmed) {
+              return;
+          }
+
+          try {
+
+              const response = await fetch(
+                  "/api/free-board/" + id,
+                  {
+                      method: "DELETE"
+                  }
+              );
+
+              if (response.ok) {
+
+                  alert("게시글이 삭제되었습니다.");
+
+                  window.location.href = "/free-board";
+
+              } else {
+
+                  const message = await response.text();
+
+                  alert(
+                      message || "게시글 삭제에 실패했습니다."
+                  );
+
+              }
+
+          } catch (error) {
+
+              console.error(error);
+
+              alert("서버와 통신할 수 없습니다.");
+
+          }
+      }
+  );
+
+  loadBoard();
+
+</script>
+
+</body>
+
+</html>

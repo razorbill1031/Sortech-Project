@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>로그인 | 소르테크</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS -->
+  <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Main CSS -->
+  <link href="/assets/css/main.css" rel="stylesheet">
+
+  <style>
+    body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f6f6f7;
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 450px;
+        padding: 20px;
+    }
+
+    .login-box {
+        background: #ffffff;
+        padding: 45px 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .login-logo {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .login-logo a {
+        text-decoration: none;
+    }
+
+    .login-logo h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .login-logo p {
+        margin: 0;
+        color: #777777;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        height: 48px;
+        padding: 10px 15px;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        outline: none;
+    }
+
+    .form-group input:focus {
+        border-color: #3498db;
+    }
+
+    .login-button {
+        width: 100%;
+        height: 50px;
+        border: none;
+        border-radius: 5px;
+        background: #3498db;
+        color: #ffffff;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 5px;
+    }
+
+    .login-button:hover {
+        opacity: 0.9;
+    }
+
+    .login-links {
+        text-align: center;
+        margin-top: 25px;
+    }
+
+    .login-links a {
+        text-decoration: none;
+        margin: 0 8px;
+    }
+
+    .back-home {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .back-home a {
+        color: #777777;
+        text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+  <div class="login-box">
+
+    <div class="login-logo">
+      <a href="/">
+        <h1>소르테크</h1>
+      </a>
+
+      <p>로그인</p>
+    </div>
+
+    <form id="loginForm">
+
+      <div class="form-group">
+        <label for="email">이메일</label>
+
+        <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="이메일을 입력하세요"
+                required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">비밀번호</label>
+
+        <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="비밀번호를 입력하세요"
+                required>
+      </div>
+
+      <button type="submit" class="login-button">
+        로그인
+      </button>
+
+    </form>
+
+    <script>
+      document.getElementById("loginForm").addEventListener("submit", async function (event) {
+
+          event.preventDefault();
+
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          const params = new URLSearchParams();
+          params.append("email", email);
+          params.append("password", password);
+
+          try {
+
+              const response = await fetch("/api/login", {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/x-www-form-urlencoded"
+                  },
+                  body: params
+              });
+
+              if (response.ok) {
+                  alert("로그인 성공");
+                  window.location.href = "/";
+              } else {
+                  alert("로그인에 실패했습니다.");
+              }
+
+          } catch (error) {
+
+              console.error(error);
+              alert("서버와 통신할 수 없습니다.");
+
+          }
+
+      });
+    </script>
+
+    <div class="login-links">
+      <span>아직 회원이 아니신가요?</span>
+      <a href="/signup">회원가입</a>
+    </div>
+
+    <div class="back-home">
+      <a href="/">← 메인 홈페이지로 돌아가기</a>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+
+</html>

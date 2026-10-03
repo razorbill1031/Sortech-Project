@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>자유게시판 | 소르테크</title>
+
+  <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/assets/css/main.css" rel="stylesheet">
+
+  <style>
+    body {
+        background: #f6f6f7;
+    }
+
+    .board-container {
+        max-width: 1100px;
+        margin: 100px auto;
+        padding: 0 20px;
+    }
+
+    .board-header {
+        margin-bottom: 40px;
+    }
+
+    .board-header h1 {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .board-header p {
+        color: #777;
+    }
+
+    .board-table {
+        background: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .board-table table {
+        margin-bottom: 0;
+    }
+
+    .board-table th {
+        background: #f8f8f8;
+    }
+
+    .write-button {
+        text-align: right;
+        margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="board-container">
+
+  <div class="board-header">
+
+    <h1>자유게시판</h1>
+
+    <p>
+      소르테크 회원들과 자유롭게 이야기를 나눠보세요.
+    </p>
+
+  </div>
+
+  <div class="board-table">
+
+    <table class="table">
+
+      <thead>
+
+      <tr>
+        <th style="width: 10%;">번호</th>
+        <th>제목</th>
+        <th style="width: 20%;">작성자</th>
+      </tr>
+
+      </thead>
+
+      <tbody id="boardList">
+
+      <tr>
+        <td colspan="3" class="text-center">
+          게시글이 없습니다.
+        </td>
+      </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <div class="write-button">
+
+    <a href="/free-board/write" class="btn btn-primary">
+      글쓰기
+    </a>
+
+  </div>
+
+  <div style="margin-top: 30px; text-align: center;">
+
+    <a href="/">
+      ← 메인 홈페이지
+    </a>
+
+  </div>
+
+</div>
+
+<script>
+  async function loadBoards() {
+
+      try {
+
+          const response = await fetch("/api/free-board");
+
+          if (!response.ok) {
+              throw new Error("게시글을 불러올 수 없습니다.");
+          }
+
+          const boards = await response.json();
+
+          const boardList = document.getElementById("boardList");
+
+          if (boards.length === 0) {
+
+              boardList.innerHTML = `
+                  <tr>
+                      <td colspan="3" class="text-center">
+                          게시글이 없습니다.
+                      </td>
+                  </tr>
+              `;
+
+              return;
+          }
+
+          boardList.innerHTML = "";
+
+          boards.forEach(board => {
+
+              boardList.innerHTML += `
+                  <tr>
+                      <td>${board.id}</td>
+                      <td>
+                          <a href="/free-board/${board.id}">
+                              ${board.title}
+                          </a>
+                      </td>
+                      <td>${board.author}</td>
+                  </tr>
+              `;
+
+          });
+
+      } catch (error) {
+
+          console.error(error);
+
+      }
+
+  }
+
+  loadBoards();
+</script>
+
+</body>
+</html>

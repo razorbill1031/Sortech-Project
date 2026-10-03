@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>회원가입 | 소르테크</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS -->
+  <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Main CSS -->
+  <link href="/assets/css/main.css" rel="stylesheet">
+
+  <style>
+    body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f6f6f7;
+    }
+
+    .signup-container {
+        width: 100%;
+        max-width: 450px;
+        padding: 20px;
+    }
+
+    .signup-box {
+        background: #ffffff;
+        padding: 45px 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .signup-logo {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .signup-logo a {
+        text-decoration: none;
+    }
+
+    .signup-logo h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .signup-logo p {
+        margin: 0;
+        color: #777777;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        height: 48px;
+        padding: 10px 15px;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        outline: none;
+    }
+
+    .form-group input:focus {
+        border-color: #3498db;
+    }
+
+    .signup-button {
+        width: 100%;
+        height: 50px;
+        border: none;
+        border-radius: 5px;
+        background: #3498db;
+        color: #ffffff;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 5px;
+    }
+
+    .signup-button:hover {
+        opacity: 0.9;
+    }
+
+    .signup-links {
+        text-align: center;
+        margin-top: 25px;
+    }
+
+    .signup-links a {
+        text-decoration: none;
+        margin-left: 8px;
+    }
+
+    .back-home {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .back-home a {
+        color: #777777;
+        text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="signup-container">
+
+  <div class="signup-box">
+
+    <div class="signup-logo">
+
+      <a href="/">
+        <h1>소르테크</h1>
+      </a>
+
+      <p>회원가입</p>
+
+    </div>
+
+    <form>
+
+      <div class="form-group">
+
+        <label for="email">
+          이메일
+        </label>
+
+        <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="이메일을 입력하세요"
+                required>
+
+      </div>
+
+      <div class="form-group">
+
+        <label for="password">
+          비밀번호
+        </label>
+
+        <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="비밀번호를 입력하세요"
+                required>
+
+      </div>
+
+      <button type="submit" class="signup-button">
+        회원가입
+      </button>
+
+    </form>
+
+    <div class="signup-links">
+
+      <span>이미 회원이신가요?</span>
+
+      <a href="/login">
+        로그인
+      </a>
+
+    </div>
+
+    <div class="back-home">
+
+      <a href="/">
+        ← 메인 홈페이지로 돌아가기
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+
+</html>
