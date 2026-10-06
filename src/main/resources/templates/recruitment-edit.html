@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>채용공고 수정</title>
+
+  <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/css/main.css" rel="stylesheet">
+</head>
+
+<body>
+
+<header class="header d-flex align-items-center fixed-top">
+  <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+    <a href="/" class="logo d-flex align-items-center me-auto">
+      <h1 class="sitename">Sortech</h1>
+    </a>
+
+    <nav id="navmenu" class="navmenu">
+      <ul>
+        <li><a href="/">홈</a></li>
+        <li><a href="/notice">공지사항</a></li>
+        <li><a href="/recruitment" class="active">채용공고</a></li>
+        <li><a href="/free-board">자유게시판</a></li>
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<main class="main">
+
+  <section class="section" style="padding-top: 120px;">
+
+    <div class="container">
+
+      <div class="section-title">
+        <h2>채용공고 수정</h2>
+      </div>
+
+      <form id="recruitmentForm" novalidate>
+
+        <div class="mb-3">
+          <label for="title"
+                 class="form-label">
+            제목
+          </label>
+
+          <input
+                  type="text"
+                  id="title"
+                  class="form-control"
+                  required>
+        </div>
+
+        <div class="mb-3">
+          <label for="content"
+                 class="form-label">
+            내용
+          </label>
+
+          <textarea
+                  id="content"
+                  class="form-control"
+                  rows="10"
+                  required></textarea>
+        </div>
+
+        <button
+                type="submit"
+                class="btn btn-primary">
+          수정하기
+        </button>
+
+        <a
+                href="/recruitment"
+                class="btn btn-secondary">
+          취소
+        </a>
+
+      </form>
+
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+
+  const path =
+      window.location.pathname;
+
+  const id =
+      path.split("/")[2];
+
+  fetch("/api/recruitments/" + id)
+      .then(response => {
+
+          if (!response.ok) {
+              throw new Error(
+                  "채용공고 조회 실패"
+              );
+          }
+
+          return response.json();
+
+      })
+      .then(recruitment => {
+
+          document.getElementById("title")
+              .value =
+              recruitment.title;
+
+          document.getElementById("content")
+              .value =
+              recruitment.content;
+
+      });
+
+  document.getElementById("recruitmentForm")
+      .addEventListener(
+          "submit",
+          async function (event) {
+
+              event.preventDefault();
+
+              const title =
+                  document.getElementById(
+                      "title"
+                  ).value;
+
+              const content =
+                  document.getElementById(
+                      "content"
+                  ).value;
+
+              const formData =
+                  new URLSearchParams();
+
+              formData.append(
+                  "title",
+                  title
+              );
+
+              formData.append(
+                  "content",
+                  content
+              );
+
+              try {
+
+                  const response =
+                      await fetch(
+                          "/api/recruitments/" + id,
+                          {
+                              method: "PUT",
+                              headers: {
+                                  "Content-Type":
+                                      "application/x-www-form-urlencoded"
+                              },
+                              body: formData
+                          }
+                      );
+
+                  const message =
+                      await response.text();
+
+                  if (!response.ok) {
+                      throw new Error(message);
+                  }
+
+                  alert(message);
+
+                  location.href =
+                      "/recruitment/" + id;
+
+              } catch (error) {
+
+                  alert(
+                      error.message ||
+                      "채용공고 수정에 실패했습니다."
+                  );
+
+                  console.error(error);
+
+              }
+
+          }
+      );
+
+</script>
+
+</body>
+
+</html>

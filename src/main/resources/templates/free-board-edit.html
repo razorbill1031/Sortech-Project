@@ -79,7 +79,7 @@
 
   <div class="edit-box">
 
-    <form id="editForm">
+    <form id="editForm" novalidate>
 
       <div class="form-group">
 
@@ -131,7 +131,7 @@
 <script>
 
   const path = window.location.pathname;
-  const id = path.substring(path.lastIndexOf("/") + 1);
+  const id = path.split("/")[2];
 
   async function loadBoard() {
 
@@ -197,7 +197,9 @@
 
               } else {
 
-                  alert("게시글 수정에 실패했습니다.");
+                  const message = await response.text();
+
+                  alert(message || "게시글 수정에 실패했습니다.");
 
               }
 

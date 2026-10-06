@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>채용공고</title>
+
+  <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/css/main.css" rel="stylesheet">
+</head>
+
+<body>
+
+<header class="header d-flex align-items-center fixed-top">
+  <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+    <a href="/" class="logo d-flex align-items-center me-auto">
+      <h1 class="sitename">Sortech</h1>
+    </a>
+
+    <nav id="navmenu" class="navmenu">
+      <ul>
+        <li><a href="/">홈</a></li>
+        <li><a href="/notice">공지사항</a></li>
+        <li><a href="/recruitment" class="active">채용공고</a></li>
+        <li><a href="/free-board">자유게시판</a></li>
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<main class="main">
+
+  <section class="section" style="padding-top: 120px;">
+
+    <div class="container">
+
+      <div class="section-title">
+        <h2 id="title"></h2>
+      </div>
+
+      <div class="mb-3">
+        <strong>작성자:</strong>
+        <span id="author"></span>
+      </div>
+
+      <hr>
+
+      <div id="content"
+           style="white-space: pre-wrap;">
+      </div>
+
+      <hr>
+
+      <div id="adminButtons"
+           style="display: none; gap: 15px;">
+
+        <a id="editButton"
+           class="btn btn-primary">
+          수정
+        </a>
+
+        <button id="deleteButton"
+                class="btn btn-danger">
+          삭제
+        </button>
+
+      </div>
+
+      <br>
+
+      <a href="/recruitment"
+         class="btn btn-secondary">
+        목록으로
+      </a>
+
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+
+  const path =
+      window.location.pathname;
+
+  const id =
+      path.split("/")[2];
+
+  fetch("/api/recruitments/" + id)
+      .then(response => {
+
+          if (!response.ok) {
+              throw new Error(
+                  "채용공고 조회 실패"
+              );
+          }
+
+          return response.json();
+
+      })
+      .then(recruitment => {
+
+          document.getElementById("title")
+              .textContent =
+              recruitment.title;
+
+          document.getElementById("author")
+              .textContent =
+              recruitment.author;
+
+          document.getElementById("content")
+              .textContent =
+              recruitment.content;
+
+          document.getElementById("editButton")
+              .href =
+              "/recruitment/" + id + "/edit";
+
+      });
+
+  fetch("/api/me/role")
+      .then(response => {
+
+          if (!response.ok) {
+              throw new Error(
+                  "권한 조회 실패"
+              );
+          }
+
+          return response.text();
+
+      })
+      .then(role => {
+
+          if (role === "ROLE_ADMIN") {
+
+              document.getElementById(
+                  "adminButtons"
+              ).style.display = "flex";
+
+          }
+
+      })
+      .catch(error => {
+
+          console.log(error);
+
+      });
+
+  document.getElementById("deleteButton")
+      .addEventListener("click", () => {
+
+          if (!confirm(
+              "정말 삭제하시겠습니까?"
+          )) {
+              return;
+          }
+
+          fetch(
+              "/api/recruitments/" + id,
+              {
+                  method: "DELETE"
+              }
+          )
+              .then(response => {
+
+                  if (!response.ok) {
+                      throw new Error(
+                          "삭제 실패"
+                      );
+                  }
+
+                  alert(
+                      "채용공고가 삭제되었습니다."
+                  );
+
+                  location.href =
+                      "/recruitment";
+
+              })
+              .catch(error => {
+
+                  alert(
+                      "삭제에 실패했습니다."
+                  );
+
+                  console.error(error);
+
+              });
+
+      });
+
+</script>
+
+</body>
+
+</html>

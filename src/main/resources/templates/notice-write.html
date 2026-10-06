@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>공지사항 작성</title>
+
+  <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/css/main.css" rel="stylesheet">
+</head>
+
+<body>
+
+<header class="header d-flex align-items-center fixed-top">
+  <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+    <a href="/" class="logo d-flex align-items-center me-auto">
+      <h1 class="sitename">Sortech</h1>
+    </a>
+
+    <nav id="navmenu" class="navmenu">
+      <ul>
+        <li><a href="/">홈</a></li>
+        <li><a href="/notice" class="active">공지사항</a></li>
+        <li><a href="/free-board">자유게시판</a></li>
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<main class="main">
+
+  <section class="section" style="padding-top: 120px;">
+
+    <div class="container">
+
+      <div class="section-title">
+        <h2>공지사항 작성</h2>
+      </div>
+
+      <form id="noticeForm" novalidate>
+
+        <div class="mb-3">
+          <label for="title" class="form-label">
+            제목
+          </label>
+
+          <input
+                  type="text"
+                  id="title"
+                  class="form-control"
+                  required>
+        </div>
+
+        <div class="mb-3">
+          <label for="content" class="form-label">
+            내용
+          </label>
+
+          <textarea
+                  id="content"
+                  class="form-control"
+                  rows="10"
+                  required></textarea>
+        </div>
+
+        <div class="d-flex justify-content-between">
+
+          <a href="/notice"
+             class="btn btn-secondary">
+            목록으로
+          </a>
+
+          <button
+                  type="submit"
+                  class="btn btn-primary">
+            작성
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+
+  document.getElementById("noticeForm")
+      .addEventListener("submit", async function (event) {
+
+          event.preventDefault();
+
+          const title =
+              document.getElementById("title").value;
+
+          const content =
+              document.getElementById("content").value;
+
+          const params = new URLSearchParams();
+
+          params.append("title", title);
+          params.append("content", content);
+
+          try {
+
+              const response =
+                  await fetch("/api/notices", {
+                      method: "POST",
+                      headers: {
+                          "Content-Type":
+                              "application/x-www-form-urlencoded"
+                      },
+                      body: params
+                  });
+
+              if (response.ok) {
+
+                  alert("공지사항이 작성되었습니다.");
+
+                  window.location.href = "/notice";
+
+              } else {
+
+                  const message =
+                      await response.text();
+
+                  alert(
+                      message ||
+                      "공지사항 작성에 실패했습니다."
+                  );
+              }
+
+          } catch (error) {
+
+              console.error(error);
+
+              alert("서버와 통신할 수 없습니다.");
+
+          }
+
+      });
+
+</script>
+
+</body>
+
+</html>

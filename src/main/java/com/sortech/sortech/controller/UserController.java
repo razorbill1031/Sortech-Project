@@ -10,6 +10,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
+import com.sortech.sortech.dto.SignupRequest;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 @RestController
 @RequestMapping("/api")
@@ -31,10 +34,12 @@ public class UserController {
 
     @PostMapping("/signup")
     public String signup(
-            @RequestParam String email,
-            @RequestParam String password) {
+            @Valid @ModelAttribute SignupRequest request) {
 
-        userService.signup(email, password);
+        userService.signup(
+                request.getEmail(),
+                request.getPassword()
+        );
 
         return "회원가입 성공";
     }
@@ -62,13 +67,20 @@ public class UserController {
 
     @GetMapping("/me")
     public String me(Authentication authentication) {
-
         return authentication.getName();
+    }
+
+    @GetMapping("/me/role")
+    public String meRole(Authentication authentication) {
+        return authentication.getAuthorities()
+                .stream()
+                .findFirst()
+                .map(authority -> authority.getAuthority())
+                .orElse("");
     }
 
     @GetMapping("/admin")
     public String admin() {
-
         return "관리자 페이지입니다.";
     }
 }

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공지사항</title>
+
+  <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/assets/css/main.css" rel="stylesheet">
+</head>
+
+<body>
+
+<header id="header" class="header d-flex align-items-center fixed-top">
+  <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+    <a href="/" class="logo d-flex align-items-center me-auto">
+      <h1 class="sitename">Sortec</h1>
+    </a>
+
+    <nav id="navmenu" class="navmenu">
+      <ul>
+        <li><a href="/">홈</a></li>
+        <li><a href="/notice">공지사항</a></li>
+        <li><a href="/free-board">자유게시판</a></li>
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<main class="main">
+
+  <section class="section">
+    <div class="container">
+
+      <div style="margin-top: 100px;">
+
+        <h2 id="title"></h2>
+
+        <p>
+          작성자:
+          <span id="author"></span>
+        </p>
+
+        <hr>
+
+        <div id="content" style="white-space: pre-wrap;"></div>
+
+        <hr>
+
+        <div id="adminButtons" style="display: none; gap: 15px;">
+          <a id="editButton" class="btn btn-primary">수정</a>
+          <button id="deleteButton" class="btn btn-danger">삭제</button>
+        </div>
+
+        <br>
+
+        <a href="/notice" class="btn btn-secondary">목록으로</a>
+
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<script>
+  const path = window.location.pathname;
+  const id = path.split("/")[2];
+
+  fetch("/api/notices/" + id)
+      .then(response => {
+          if (!response.ok) {
+              throw new Error("공지사항 조회 실패");
+          }
+          return response.json();
+      })
+      .then(notice => {
+          document.getElementById("title").textContent = notice.title;
+          document.getElementById("author").textContent = notice.author;
+          document.getElementById("content").textContent = notice.content;
+
+          document.getElementById("editButton").href = "/notice/" + id + "/edit";
+      });
+
+  fetch("/api/me/role")
+      .then(response => {
+          if (!response.ok) {
+              throw new Error("권한 조회 실패");
+          }
+          return response.text();
+      })
+      .then(role => {
+          console.log("현재 권한:", role);
+
+          if (role === "ROLE_ADMIN") {
+              document.getElementById("adminButtons").style.display = "flex";
+          }
+      })
+      .catch(error => {
+          console.log(error);
+      });
+
+  document.getElementById("deleteButton").addEventListener("click", () => {
+
+      if (!confirm("정말 삭제하시겠습니까?")) {
+          return;
+      }
+
+      fetch("/api/notices/" + id, {
+          method: "DELETE"
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error("삭제 실패");
+          }
+
+          alert("공지사항이 삭제되었습니다.");
+          location.href = "/notice";
+      })
+      .catch(error => {
+          alert("삭제에 실패했습니다.");
+          console.error(error);
+      });
+  });
+</script>
+
+</body>
+</html>

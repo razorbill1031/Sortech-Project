@@ -1,8 +1,8 @@
 package com.sortech.sortech.controller;
 
-import com.sortech.sortech.domain.FreeBoard;
-import com.sortech.sortech.dto.FreeBoardRequest;
-import com.sortech.sortech.service.FreeBoardService;
+import com.sortech.sortech.domain.Notice;
+import com.sortech.sortech.dto.NoticeRequest;
+import com.sortech.sortech.service.NoticeService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/free-board")
-public class FreeBoardController {
+@RequestMapping("/api/notices")
+public class NoticeController {
 
-    private final FreeBoardService freeBoardService;
+    private final NoticeService noticeService;
 
-    public FreeBoardController(FreeBoardService freeBoardService) {
-        this.freeBoardService = freeBoardService;
+    public NoticeController(NoticeService noticeService) {
+        this.noticeService = noticeService;
     }
 
     @PostMapping
     public ResponseEntity<?> create(
-            @Valid @ModelAttribute FreeBoardRequest request,
+            @Valid @ModelAttribute NoticeRequest request,
             BindingResult bindingResult,
             Authentication authentication) {
 
@@ -35,7 +35,7 @@ public class FreeBoardController {
         String author = authentication.getName();
 
         return ResponseEntity.ok(
-                freeBoardService.create(
+                noticeService.create(
                         request.getTitle(),
                         request.getContent(),
                         author
@@ -44,48 +44,40 @@ public class FreeBoardController {
     }
 
     @GetMapping
-    public List<FreeBoard> findAll() {
-        return freeBoardService.findAll();
+    public List<Notice> findAll() {
+        return noticeService.findAll();
     }
 
     @GetMapping("/{id}")
-    public FreeBoard findById(@PathVariable Long id) {
-        return freeBoardService.findById(id);
+    public Notice findById(@PathVariable Long id) {
+        return noticeService.findById(id);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(
             @PathVariable Long id,
-            @Valid @ModelAttribute FreeBoardRequest request,
-            BindingResult bindingResult,
-            Authentication authentication) {
+            @Valid @ModelAttribute NoticeRequest request,
+            BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest()
                     .body(bindingResult.getFieldErrors().get(0).getDefaultMessage());
         }
 
-        String author = authentication.getName();
-
         return ResponseEntity.ok(
-                freeBoardService.update(
+                noticeService.update(
                         id,
                         request.getTitle(),
-                        request.getContent(),
-                        author
+                        request.getContent()
                 )
         );
     }
 
     @DeleteMapping("/{id}")
-    public String delete(
-            @PathVariable Long id,
-            Authentication authentication) {
+    public String delete(@PathVariable Long id) {
 
-        String author = authentication.getName();
+        noticeService.delete(id);
 
-        freeBoardService.delete(id, author);
-
-        return "게시글이 삭제되었습니다.";
+        return "공지사항이 삭제되었습니다.";
     }
 }

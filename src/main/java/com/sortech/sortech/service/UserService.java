@@ -20,8 +20,11 @@ public class UserService {
 
     public User signup(String email, String password) {
 
-        User user = new User();
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+        }
 
+        User user = new User();
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         user.setRole(Role.USER);
@@ -31,11 +34,11 @@ public class UserService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() ->
+                        new IllegalArgumentException("사용자를 찾을 수 없습니다."));
     }
 
     public User login(String email, String password) {
-
         User user = findByEmail(email);
 
         if (!passwordEncoder.matches(password, user.getPassword())) {

@@ -79,7 +79,7 @@
 
   <div class="write-box">
 
-    <form id="writeForm">
+    <form id="writeForm" novalidate>
 
       <div class="form-group">
 
@@ -159,7 +159,8 @@
 
           } else {
 
-              alert("게시글 등록에 실패했습니다.");
+              const message = await response.text();
+              alert(message || "게시글 등록에 실패했습니다.");
 
           }
 
