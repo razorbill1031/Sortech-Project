@@ -47,12 +47,17 @@ public class FreeBoardService {
         return freeBoardRepository.save(freeBoard);
     }
 
-    public void delete(Long id, String author) {
+    public void delete(
+            Long id,
+            String author,
+            boolean isAdmin) {
 
         FreeBoard freeBoard = findById(id);
 
-        if (!freeBoard.getAuthor().equals(author)) {
-            throw new IllegalArgumentException("게시글 작성자만 삭제할 수 있습니다.");
+        if (!isAdmin && !freeBoard.getAuthor().equals(author)) {
+            throw new IllegalArgumentException(
+                    "게시글 작성자만 삭제할 수 있습니다."
+            );
         }
 
         freeBoardRepository.delete(freeBoard);

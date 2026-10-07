@@ -44,8 +44,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
                 .csrf(csrf -> csrf.disable())
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/notice/write",
@@ -53,21 +55,64 @@ public class SecurityConfig {
                                 "/recruitment/write",
                                 "/recruitment/*/edit"
                         ).hasRole("ADMIN")
-                        .requestMatchers("/", "/login", "/signup", "/notice", "/notice/*", "/recruitment", "/recruitment/*",
-                                "/assets/**", "/api/signup", "/api/login").permitAll()
-                        .requestMatchers("/notice/write").hasRole("ADMIN")
-                        .requestMatchers("/notice/*/edit").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/notices/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/notices").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/notices/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/notices/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/recruitments/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/recruitments").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/recruitments/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/recruitments/**").hasRole("ADMIN")
-                        .requestMatchers("/api/admin").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+
+                        .requestMatchers(
+                                "/",
+                                "/login",
+                                "/signup",
+                                "/notice",
+                                "/notice/*",
+                                "/recruitment",
+                                "/recruitment/*",
+                                "/free-board",
+                                "/free-board/*",
+                                "/assets/**",
+                                "/api/signup",
+                                "/api/login"
+                        ).permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/notices/**")
+                        .permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/api/notices")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/notices/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/notices/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/recruitments/**")
+                        .permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/api/recruitments")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/recruitments/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/recruitments/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers("/api/admin")
+                        .hasRole("ADMIN")
+
+                        .anyRequest()
+                        .authenticated()
                 )
+
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+
+                            if (request.getRequestURI().startsWith("/api/")) {
+                                response.setStatus(401);
+                            } else {
+                                response.sendRedirect("/login");
+                            }
+                        })
+                )
+
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")

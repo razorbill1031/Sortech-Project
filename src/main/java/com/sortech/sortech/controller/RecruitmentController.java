@@ -84,7 +84,7 @@ public class RecruitmentController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(Long id) {
+    public String delete(@PathVariable Long id) {
         recruitmentService.delete(id);
         return "채용공고가 삭제되었습니다.";
     }

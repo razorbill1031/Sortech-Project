@@ -84,7 +84,13 @@ public class FreeBoardController {
 
         String author = authentication.getName();
 
-        freeBoardService.delete(id, author);
+        boolean isAdmin = authentication.getAuthorities()
+                .stream()
+                .anyMatch(authority ->
+                        authority.getAuthority().equals("ROLE_ADMIN")
+                );
+
+        freeBoardService.delete(id, author, isAdmin);
 
         return "게시글이 삭제되었습니다.";
     }
